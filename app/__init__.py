@@ -41,3 +41,6 @@ def health_check():
         return {"status": "ok", "database": "connected"}, 200
     except Exception as e:
         return {"status": "error", "database": str(e)}, 500
+
+from app.scheduler import start_scheduler
+start_scheduler()
