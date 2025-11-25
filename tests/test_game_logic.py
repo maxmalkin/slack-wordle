@@ -11,12 +11,15 @@ def test_evaluate_guess_all_absent():
 
 def test_evaluate_guess_mixed():
     result = evaluate_guess("crane", "cigar")
-    assert result == ["correct", "absent", "present", "absent", "absent"]
+    # c=correct, r=present (in pos 4), a=present (in pos 3), n=absent, e=absent
+    assert result == ["correct", "present", "present", "absent", "absent"]
 
 def test_evaluate_guess_duplicate_letters():
     result = evaluate_guess("speed", "erase")
-    assert result == ["absent", "absent", "correct", "present", "absent"]
+    # s=present (in pos 3), p=absent, e=present (in pos 0 or 4), e=present (remaining e), d=absent
+    assert result == ["present", "absent", "present", "present", "absent"]
 
 def test_evaluate_guess_duplicate_in_answer():
     result = evaluate_guess("robot", "floor")
-    assert result == ["absent", "present", "absent", "present", "absent"]
+    # r=present (in pos 4), o=present (in pos 2 or 3), b=absent, o=correct (exact match), t=absent
+    assert result == ["present", "present", "absent", "correct", "absent"]
