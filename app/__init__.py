@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 import os
 from dotenv import load_dotenv
 
@@ -23,3 +23,21 @@ if os.environ.get("SLACK_BOT_TOKEN") and os.environ.get("SLACK_BOT_TOKEN") != "x
 
     # Import handlers only when slack_app is initialized
     from app import slack_handlers
+
+@flask_app.route("/slack/commands", methods=["POST"])
+def slack_commands():
+    return handler.handle(request)
+
+@flask_app.route("/slack/interactions", methods=["POST"])
+def slack_interactions():
+    return handler.handle(request)
+
+@flask_app.route("/health", methods=["GET"])
+def health_check():
+    from app.database import get_db_connection, close_db_connection
+    try:
+        conn = get_db_connection()
+        close_db_connection(conn)
+        return {"status": "ok", "database": "connected"}, 200
+    except Exception as e:
+        return {"status": "error", "database": str(e)}, 500
