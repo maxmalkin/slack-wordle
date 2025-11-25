@@ -21,4 +21,5 @@ if os.environ.get("SLACK_BOT_TOKEN") and os.environ.get("SLACK_BOT_TOKEN") != "x
 
     handler = SlackRequestHandler(slack_app)
 
-from app import slack_handlers
+    # Import handlers only when slack_app is initialized
+    from app import slack_handlers
