@@ -47,7 +47,6 @@ def handle_wordle_command(ack, command, respond, client):
 
     feedback_list = []
     for guess in game.guesses:
-        answer = get_daily_word(date.today())
         feedback = evaluate_guess(guess, answer)
         feedback_list.append(feedback)
 
@@ -55,10 +54,11 @@ def handle_wordle_command(ack, command, respond, client):
         guesses=game.guesses,
         feedback=feedback_list,
         attempts=game.attempts,
-        status=game.status
+        status=game.status,
+        answer=answer if game.status == "lost" else None
     )
 
-    respond(blocks=blocks, text="Wordle Game")
+    respond(blocks=blocks, text="Wordle Game", response_type="ephemeral")
 
 @slack_app.action("submit_guess")
 def handle_submit_guess(ack, body, client, respond):
