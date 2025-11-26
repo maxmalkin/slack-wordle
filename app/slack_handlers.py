@@ -42,6 +42,12 @@ def handle_wordle_command(ack, command, respond, client):
         respond(text="Your game for today has been reset. Type `/wordle` to start a new game!", response_type="ephemeral")
         return
 
+    if text == "summary":
+        from app.scheduler import post_daily_summary
+        post_daily_summary()
+        respond(text="Daily summary posted to the channel!", response_type="ephemeral")
+        return
+
     game = get_or_create_game(user_id, date.today())
 
     answer = get_daily_word(date.today())

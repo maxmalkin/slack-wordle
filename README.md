@@ -19,6 +19,7 @@ Daily Wordle game for Slack teams with statistics and leaderboards.
 - `/wordle stats` - View your statistics
 - `/wordle leaderboard` - View team rankings
 - `/wordle reset` - Reset today's game and start over
+- `/wordle summary` - Post daily summary to channel (auto-posts at 9am)
 
 ## Architecture
 
