@@ -6,7 +6,7 @@ Daily Wordle game for Slack teams with statistics and leaderboards.
 
 - Daily 5-letter word puzzle
 - 6 attempts per game
-- Color-coded feedback (green/yellow/gray)
+- Color-coding
 - Personal statistics tracking
 - Team leaderboards
 - Current streak and max streak tracking
