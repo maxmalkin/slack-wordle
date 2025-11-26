@@ -26,7 +26,10 @@ def handle_wordle_command(ack, command, say):
         return
 
     if text == "leaderboard":
-        say(text="Leaderboard feature coming soon!")
+        from app.leaderboard import get_leaderboard_data, format_leaderboard_message
+        data = get_leaderboard_data()
+        message = format_leaderboard_message(data)
+        say(text=message)
         return
 
     game = get_or_create_game(user_id, date.today())
