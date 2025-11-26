@@ -70,10 +70,11 @@ def handle_wordle_command(ack, command, respond, client):
     respond(blocks=blocks, text="Wordle Game", response_type="ephemeral")
 
 @slack_app.action("submit_guess")
-def handle_submit_guess(ack, body, respond):
+def handle_submit_guess(ack, body, respond, client):
     ack()
 
     user_id = body["user"]["id"]
+    channel_id = body["channel"]["id"]
 
     state_values = body["state"]["values"]
     guess_input_block = state_values.get("guess_input", {})
@@ -109,8 +110,16 @@ def handle_submit_guess(ack, body, respond):
 
         if result.game_won:
             completion_text = f"Congratulations! You won in {game.attempts} attempts!"
+            client.chat_postMessage(
+                channel=channel_id,
+                text=f"<@{user_id}> solved today's Wordle in *{game.attempts}* attempts!"
+            )
         else:
             completion_text = f"Game over! The answer was {result.answer.upper()}."
+            client.chat_postMessage(
+                channel=channel_id,
+                text=f"<@{user_id}> didn't solve today's Wordle"
+            )
 
     respond(
         blocks=blocks,
