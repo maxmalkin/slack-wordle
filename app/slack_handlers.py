@@ -7,10 +7,11 @@ from app.game_logic import evaluate_guess
 from app.daily_word import get_daily_word
 
 @slack_app.command("/wordle")
-def handle_wordle_command(ack, command, say):
+def handle_wordle_command(ack, command, respond, client):
     ack()
 
     user_id = command["user_id"]
+    channel_id = command["channel_id"]
     text = command.get("text", "").strip()
 
     if text == "stats":
@@ -22,25 +23,25 @@ def handle_wordle_command(ack, command, say):
             max_streak=stats.max_streak,
             guess_distribution=stats.guess_distribution
         )
-        say(blocks=blocks, text="Your Wordle Statistics")
+        respond(blocks=blocks, text="Your Wordle Statistics")
         return
 
     if text == "leaderboard":
         from app.leaderboard import get_leaderboard_data, format_leaderboard_message
         data = get_leaderboard_data()
         message = format_leaderboard_message(data)
-        say(text=message)
+        respond(text=message)
         return
 
     game = get_or_create_game(user_id, date.today())
 
     if game.status == "won":
-        say(text=f"You already won today's puzzle in {game.attempts} attempts!")
+        respond(text=f"You already won today's puzzle in {game.attempts} attempts!")
         return
 
     if game.status == "lost":
         answer = get_daily_word(date.today())
-        say(text=f"You already played today's puzzle. The answer was {answer.upper()}.")
+        respond(text=f"You already played today's puzzle. The answer was {answer.upper()}.")
         return
 
     feedback_list = []
@@ -56,13 +57,15 @@ def handle_wordle_command(ack, command, say):
         status=game.status
     )
 
-    say(blocks=blocks, text="Wordle Game")
+    respond(blocks=blocks, text="Wordle Game")
 
 @slack_app.action("submit_guess")
-def handle_submit_guess(ack, body, say):
+def handle_submit_guess(ack, body, client, respond):
     ack()
 
     user_id = body["user"]["id"]
+    channel_id = body["channel"]["id"]
+    message_ts = body["message"]["ts"]
 
     state_values = body["state"]["values"]
     guess_input_block = state_values.get("guess_input", {})
@@ -73,7 +76,7 @@ def handle_submit_guess(ack, body, say):
     result = submit_guess(game, guess)
 
     if not result.success:
-        say(text=f"Error: {result.error}")
+        respond(text=f"Error: {result.error}", replace_original=False, response_type="ephemeral")
         return
 
     game = get_or_create_game(user_id, date.today())
@@ -91,12 +94,18 @@ def handle_submit_guess(ack, body, say):
         status=game.status
     )
 
+    completion_text = "Wordle Game"
     if result.game_won or result.game_lost:
         update_stats_after_game(user_id, date.today(), result.game_won, game.attempts)
 
         if result.game_won:
-            say(blocks=blocks, text=f"Congratulations! You won in {game.attempts} attempts!")
+            completion_text = f"Congratulations! You won in {game.attempts} attempts!"
         else:
-            say(blocks=blocks, text=f"Game over! The answer was {result.answer.upper()}.")
-    else:
-        say(blocks=blocks, text="Wordle Game")
+            completion_text = f"Game over! The answer was {result.answer.upper()}."
+
+    client.chat_update(
+        channel=channel_id,
+        ts=message_ts,
+        blocks=blocks,
+        text=completion_text
+    )
