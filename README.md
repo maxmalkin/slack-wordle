@@ -44,7 +44,7 @@ Set environment variables in `.env`:
 5. Install app to workspace
 6. Copy Bot Token and Signing Secret to `.env`
 
-## Deployment to Render
+## Deployment (On Render)
 
 1. Push code to GitHub
 2. Go to https://render.com
