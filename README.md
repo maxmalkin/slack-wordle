@@ -55,8 +55,7 @@ Set environment variables in `.env`:
 7. Run database migration:
    - Open Shell in Render dashboard
    - Run: `psql $DATABASE_URL < migrations/init_db.sql`
-8. Update Slack app manifest with Render URL
-9. Test with `/wordle` in Slack
+8. Test with `/wordle` in Slack
 
 ## Development
 
