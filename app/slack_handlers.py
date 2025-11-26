@@ -35,13 +35,14 @@ def handle_wordle_command(ack, command, respond, client):
 
     game = get_or_create_game(user_id, date.today())
 
+    answer = get_daily_word(date.today())
+
     if game.status == "won":
-        respond(text=f"You already won today's puzzle in {game.attempts} attempts!")
+        respond(text=f"You already won today's puzzle in {game.attempts} attempts!", response_type="ephemeral")
         return
 
     if game.status == "lost":
-        answer = get_daily_word(date.today())
-        respond(text=f"You already played today's puzzle. The answer was {answer.upper()}.")
+        respond(text=f"You already played today's puzzle. The answer was {answer.upper()}.", response_type="ephemeral")
         return
 
     feedback_list = []
