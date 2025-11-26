@@ -2,6 +2,17 @@
 
 Daily Wordle game for Slack teams with statistics and leaderboards.
 
+## Features
+
+- Daily 5-letter word puzzle
+- 6 attempts per game
+- Color-coded feedback (green/yellow/gray)
+- Personal statistics tracking
+- Team leaderboards
+- Current streak and max streak tracking
+- Guess distribution charts
+- Share results to channel
+
 ## Setup
 
 1. Clone repository
@@ -17,6 +28,12 @@ Set environment variables in `.env`:
 - `SLACK_SIGNING_SECRET`: Signing secret from Slack app
 - `DATABASE_URL`: PostgreSQL connection string
 - `WORDLE_CHANNEL_ID`: Channel for leaderboards/summaries
+
+## Commands
+
+- `/wordle` - Play today's puzzle
+- `/wordle stats` - View your statistics
+- `/wordle leaderboard` - View team rankings
 
 ## Slack App Setup
 
@@ -42,8 +59,37 @@ Set environment variables in `.env`:
 8. Update Slack app manifest with Render URL
 9. Test with `/wordle` in Slack
 
-## Commands
+## Development
 
-- `/wordle` - Play today's puzzle
-- `/wordle stats` - View personal statistics
-- `/wordle leaderboard` - View team leaderboard
+Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+Set up database:
+```bash
+createdb wordle
+psql wordle < migrations/init_db.sql
+```
+
+Run locally:
+```bash
+python run.py
+```
+
+Run tests:
+```bash
+pytest tests/ -v
+```
+
+## Architecture
+
+- Flask web server with Slack Bolt SDK
+- PostgreSQL database for persistence
+- APScheduler for daily word rotation
+- Block Kit for rich Slack UI
+- Direct database access (no caching)
+
+## License
+
+MIT
