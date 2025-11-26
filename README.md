@@ -40,10 +40,9 @@ Set environment variables in `.env`:
 1. Go to https://api.slack.com/apps
 2. Click "Create New App" > "From an app manifest"
 3. Select your workspace
-4. Paste contents of `slack_manifest.yaml`
-5. Replace `your-app.onrender.com` with your actual Render URL
-6. Install app to workspace
-7. Copy Bot Token and Signing Secret to `.env`
+4. Paste contents of `slack_manifest.json`
+5. Install app to workspace
+6. Copy Bot Token and Signing Secret to `.env`
 
 ## Deployment to Render
 
