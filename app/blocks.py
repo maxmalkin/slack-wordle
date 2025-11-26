@@ -126,6 +126,7 @@ def build_game_board(guesses: List[str], feedback: List[List[str]], attempts: in
 
 def build_stats_message(games_played: int, games_won: int, current_streak: int, max_streak: int, guess_distribution: Dict[str, int]) -> List[Dict]:
     win_percentage = (games_won / games_played * 100) if games_played > 0 else 0
+    games_lost = games_played - games_won
 
     blocks = [
         {
@@ -136,31 +137,39 @@ def build_stats_message(games_played: int, games_won: int, current_streak: int, 
             }
         },
         {
-            "type": "section",
-            "fields": [
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Games Played:*\n{games_played}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Win %:*\n{win_percentage:.0f}%"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Current Streak:*\n{current_streak}"
-                },
-                {
-                    "type": "mrkdwn",
-                    "text": f"*Max Streak:*\n{max_streak}"
-                }
-            ]
+            "type": "divider"
         },
         {
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": "*Guess Distribution:*"
+                "text": f"*OVERALL PERFORMANCE*\n\n*Total Games:* `{games_played}`\n*Wins:* `{games_won}` | *Losses:* `{games_lost}`\n*Win Rate:* *`{win_percentage:.1f}%`*"
+            }
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "type": "section",
+            "fields": [
+                {
+                    "type": "mrkdwn",
+                    "text": f"*CURRENT STREAK*\n`{current_streak}` days"
+                },
+                {
+                    "type": "mrkdwn",
+                    "text": f"*MAX STREAK*\n`{max_streak}` days"
+                }
+            ]
+        },
+        {
+            "type": "divider"
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "*GUESS DISTRIBUTION*"
             }
         }
     ]
@@ -168,13 +177,15 @@ def build_stats_message(games_played: int, games_won: int, current_streak: int, 
     max_count = max(guess_distribution.values()) if guess_distribution.values() else 1
     for i in range(1, 7):
         count = guess_distribution.get(str(i), 0)
-        bar_length = int((count / max_count) * 20) if max_count > 0 else 0
-        bar = "█" * bar_length
+        bar_length = int((count / max_count) * 25) if max_count > 0 else 0
+        bar = "▓" * bar_length
+        percentage = (count / games_played * 100) if games_played > 0 else 0
+
         blocks.append({
             "type": "section",
             "text": {
                 "type": "mrkdwn",
-                "text": f"{i}: {bar} {count}"
+                "text": f"`{i}` {bar} *{count}* _{percentage:.0f}%_"
             }
         })
 

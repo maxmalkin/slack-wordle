@@ -27,10 +27,10 @@ def handle_wordle_command(ack, command, respond, client):
         return
 
     if text == "leaderboard":
-        from app.leaderboard import get_leaderboard_data, format_leaderboard_message
+        from app.leaderboard import get_leaderboard_data, format_leaderboard_blocks
         data = get_leaderboard_data()
-        message = format_leaderboard_message(data)
-        respond(text=message, response_type="ephemeral")
+        blocks = format_leaderboard_blocks(data)
+        respond(blocks=blocks, text="Wordle Leaderboard", response_type="ephemeral")
         return
 
     if text == "reset":
