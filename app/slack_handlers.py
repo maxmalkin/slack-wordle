@@ -23,14 +23,14 @@ def handle_wordle_command(ack, command, respond, client):
             max_streak=stats.max_streak,
             guess_distribution=stats.guess_distribution
         )
-        respond(blocks=blocks, text="Your Wordle Statistics")
+        respond(blocks=blocks, text="Your Wordle Statistics", response_type="ephemeral")
         return
 
     if text == "leaderboard":
         from app.leaderboard import get_leaderboard_data, format_leaderboard_message
         data = get_leaderboard_data()
         message = format_leaderboard_message(data)
-        respond(text=message)
+        respond(text=message, response_type="ephemeral")
         return
 
     game = get_or_create_game(user_id, date.today())
@@ -61,12 +61,10 @@ def handle_wordle_command(ack, command, respond, client):
     respond(blocks=blocks, text="Wordle Game", response_type="ephemeral")
 
 @slack_app.action("submit_guess")
-def handle_submit_guess(ack, body, client, respond):
+def handle_submit_guess(ack, body, respond):
     ack()
 
     user_id = body["user"]["id"]
-    channel_id = body["channel"]["id"]
-    message_ts = body["message"]["ts"]
 
     state_values = body["state"]["values"]
     guess_input_block = state_values.get("guess_input", {})
@@ -81,10 +79,10 @@ def handle_submit_guess(ack, body, client, respond):
         return
 
     game = get_or_create_game(user_id, date.today())
+    answer = get_daily_word(date.today())
 
     feedback_list = []
     for g in game.guesses:
-        answer = get_daily_word(date.today())
         feedback = evaluate_guess(g, answer)
         feedback_list.append(feedback)
 
@@ -92,7 +90,8 @@ def handle_submit_guess(ack, body, client, respond):
         guesses=game.guesses,
         feedback=feedback_list,
         attempts=game.attempts,
-        status=game.status
+        status=game.status,
+        answer=answer if game.status == "lost" else None
     )
 
     completion_text = "Wordle Game"
@@ -104,9 +103,9 @@ def handle_submit_guess(ack, body, client, respond):
         else:
             completion_text = f"Game over! The answer was {result.answer.upper()}."
 
-    client.chat_update(
-        channel=channel_id,
-        ts=message_ts,
+    respond(
         blocks=blocks,
-        text=completion_text
+        text=completion_text,
+        replace_original=True,
+        response_type="ephemeral"
     )

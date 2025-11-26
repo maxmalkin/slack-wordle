@@ -42,14 +42,14 @@ def build_keyboard(letter_states: Dict[str, str]) -> str:
 
     return keyboard_text
 
-def build_game_board(guesses: List[str], feedback: List[List[str]], attempts: int, status: str) -> List[Dict]:
+def build_game_board(guesses: List[str], feedback: List[List[str]], attempts: int, status: str, answer: str = None) -> List[Dict]:
     blocks = []
 
     header_text = f"Wordle - Attempt {attempts}/6"
     if status == "won":
         header_text = f"Wordle - Solved in {attempts}!"
     elif status == "lost":
-        header_text = "Wordle - Better luck tomorrow!"
+        header_text = f"Wordle - Better luck tomorrow! The answer was: {answer.upper()}"
 
     blocks.append({
         "type": "header",
