@@ -12,6 +12,7 @@
     "slash_commands": [
       {
         "command": "/wordle",
+        "url": "https://slack-wordle.onrender.com/slack/commands",
         "description": "Play today's Wordle or view stats/leaderboard",
         "usage_hint": "[stats|leaderboard]",
         "should_escape": false
