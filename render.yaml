@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: slack-wordle
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn run:flask_app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SLACK_BOT_TOKEN
+        sync: false
+      - key: SLACK_SIGNING_SECRET
+        sync: false
+      - key: WORDLE_CHANNEL_ID
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: slack-wordle-db
+          property: connectionString
+
+databases:
+  - name: slack-wordle-db
+    databaseName: wordle
+    user: wordle
+    plan: free
