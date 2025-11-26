@@ -14,7 +14,7 @@
 				"command": "/wordle",
 				"url": "https://<YOUR_URL>/slack/commands",
 				"description": "Play today's Wordle or view stats/leaderboard",
-				"usage_hint": "[stats|leaderboard]",
+				"usage_hint": "[stats|leaderboard|reset|summary]",
 				"should_escape": false
 			}
 		]
