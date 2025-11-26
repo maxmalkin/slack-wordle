@@ -33,6 +33,15 @@ def handle_wordle_command(ack, command, respond, client):
         respond(text=message, response_type="ephemeral")
         return
 
+    if text == "reset":
+        from app.database import execute_query
+        execute_query(
+            "DELETE FROM user_games WHERE user_id = %s AND date = %s",
+            (user_id, date.today())
+        )
+        respond(text="Your game for today has been reset. Type `/wordle` to start a new game!", response_type="ephemeral")
+        return
+
     game = get_or_create_game(user_id, date.today())
 
     answer = get_daily_word(date.today())

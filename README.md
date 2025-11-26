@@ -34,6 +34,7 @@ Set environment variables in `.env`:
 - `/wordle` - Play today's puzzle
 - `/wordle stats` - View your statistics
 - `/wordle leaderboard` - View team rankings
+- `/wordle reset` - Reset today's game and start over
 
 ## Slack App Setup
 
